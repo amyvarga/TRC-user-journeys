@@ -1,0 +1,771 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rewilding Collective User Journeys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Adamina&family=Poppins:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: workshop board on white. TRC brand palette (sage #9AC28C, forest #5F7856, ink #1B1B1B) with Adamina + Poppins, as on rewildingcollective.org. Deliberately light-only. */
+:root{
+  color-scheme:light;
+  --page:#FFFFFF; --bg:#F2F7EF; --surface:#FFFFFF; --ink:#1B1B1B; --muted:#5E5E5E; --line:#DBDBDB;
+  --brand:#5F7856; --sage:#9AC28C;
+  --conv:#4F6A47; --conv-soft:#E4EFDF; --opp:#5F7856; --opp-soft:#F2F7EF;
+  --pain:#B02A20; --pain-soft:#FBEBE9; --off:#6B6B6B; --warn:#8A6100; --warn-soft:#FBF3DF;
+  --f-display:"Adamina", Georgia, serif;
+  --f-body:"Poppins", Arial, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--ink);font:14.5px/1.55 var(--f-body);padding-inline:clamp(16px,3vw,40px);padding-block:0 60px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;font-weight:400}
+h1{font-size:clamp(26px,4vw,40px);line-height:1.15}
+h2{font-size:24px}
+h3{font-size:16px}
+.brandbar{height:8px;background:var(--sage);margin-inline:calc(-1 * clamp(16px,3vw,40px));margin-bottom:28px}
+.wrap{max-width:1500px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+.eyebrow{font:500 13px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.intro{display:flex;flex-direction:column;gap:8px;max-width:70ch}
+.intro p{margin:0;color:var(--muted)}
+.legend{display:flex;flex-wrap:wrap;gap:10px 18px;font-size:13px;color:var(--muted);align-items:center}
+.legend span{display:inline-flex;gap:6px;align-items:center}
+.sw{width:14px;height:14px;border-radius:3px;display:inline-block;border:1.5px solid}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--line);padding-bottom:12px}
+.tab{font:600 15px var(--f-body);background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:8px 16px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--brand);color:var(--surface);border-color:var(--brand)}
+.tab:focus-visible,.seg button:focus-visible,.scroll:focus-visible,summary:focus-visible{outline:3px solid var(--conv);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.textflow{font-size:13.5px}.textflow summary{cursor:pointer;color:var(--brand);font-weight:600;padding:6px 0}.textflow ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:3px}
+.userhead{display:flex;flex-wrap:wrap;gap:16px 32px;align-items:flex-end;justify-content:space-between}
+.userhead p{margin:4px 0 0;color:var(--muted);max-width:62ch}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface);flex-wrap:wrap}
+.seg button{font:500 14px var(--f-body);border:0;background:transparent;color:var(--muted);padding:8px 14px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--conv-soft);color:var(--ink);font-weight:600}
+.scroll{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.map{display:grid;grid-template-columns:132px repeat(5,minmax(210px,1fr));min-width:1180px}
+.map>div{padding:12px 14px;border-bottom:1px solid var(--line);border-left:1px solid var(--line);font-size:13.5px;min-width:0}
+.map>.rl{border-left:0;font:500 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--bg)}
+.map>.sh{font:400 17px var(--f-display);background:var(--bg);border-top:3px solid var(--sage)}
+.map>.sh small{display:block;font:500 12px var(--f-mono);color:var(--muted);letter-spacing:.06em}
+.map>.last{border-bottom:0}
+.map ul{margin:0;padding-left:16px;display:flex;flex-direction:column;gap:5px}
+.think{font-style:italic;color:var(--muted)}
+.tp{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:4px;padding:1px 7px;margin:0 4px 4px 0}
+.tp.off{border-style:dashed;color:var(--off)}
+.row-pain{background:var(--pain-soft)}
+.row-pain li::marker{color:var(--pain)}
+.row-opp{background:var(--opp-soft)}
+.row-opp li::marker{color:var(--opp)}
+.emo{grid-column:2 / span 5;padding:0!important}
+.emo svg{display:block;width:100%;height:120px}
+.chips{display:flex;flex-direction:column;gap:6px}
+.chip{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;line-height:1.35}
+.chip .id{font:500 12px var(--f-mono);padding:2px 6px;border-radius:4px;white-space:nowrap;border:1.5px solid var(--conv);color:var(--conv)}
+.chip.macro .id{background:var(--conv);color:var(--surface)}
+.chip.cross .id{border-style:dotted;color:var(--muted);border-color:var(--muted);background:transparent}
+.st{display:block;font:500 11.5px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+.st.live{color:var(--opp)} .st.partial{color:var(--warn)} .st.missing{color:var(--pain)} .st.offsite{color:var(--off)} .st.target{color:var(--conv)} .st.cross{color:var(--muted)}
+.none{color:var(--muted);font-size:12.5px}
+.flowwrap{padding:8px}
+.flowwrap svg{display:block}
+.n-box{fill:var(--surface);stroke:var(--ink);stroke-width:1.3}
+.n-entry .n-box{fill:var(--bg)}
+.n-form .n-box{fill:var(--bg)}
+.n-decision .n-box{fill:var(--warn-soft);stroke:var(--warn)}
+.n-offsite .n-box{stroke:var(--off);stroke-dasharray:5 4;fill:var(--surface)}
+.n-offsite text{fill:var(--off)}
+.n-macro .n-box{fill:var(--conv-soft);stroke:var(--conv);stroke-width:2.6}
+.n-micro .n-box{fill:var(--surface);stroke:var(--conv);stroke-width:1.6}
+.n-drop .n-box{fill:var(--pain-soft);stroke:var(--pain);stroke-width:1.6}
+.n-drop text{fill:var(--pain)}
+.n-txt{font:500 12.5px var(--f-body);fill:var(--ink)}
+.n-kind{font:500 10.5px var(--f-mono);letter-spacing:.06em;fill:var(--muted);text-transform:uppercase}
+.tag rect{fill:var(--surface);stroke:var(--conv);stroke-width:1.4}
+.tag.macro rect{fill:var(--conv)}
+.tag text{font:500 10.5px var(--f-mono);fill:var(--conv)}
+.tag.macro text{fill:var(--surface)}
+.tag.missing rect{stroke:var(--pain);fill:var(--pain-soft)}
+.tag.missing text{fill:var(--pain)}
+.e{fill:none;stroke:var(--muted);stroke-width:1.4}
+.e.off{stroke:var(--off);stroke-dasharray:5 4}
+.e.pain{stroke:var(--pain)}
+.e-lbl rect{fill:var(--surface)}
+.e-lbl text{font:500 11.5px var(--f-body);fill:var(--muted)}
+.arrow{fill:var(--muted)} .arrow-pain{fill:var(--pain)} .arrow-off{fill:var(--off)}
+.emo-line{fill:none;stroke:var(--ink);stroke-width:2.2}
+.emo-dot{fill:var(--surface);stroke:var(--ink);stroke-width:2}
+.emo-grid{stroke:var(--line);stroke-width:1}
+.emo-zero{stroke:var(--muted);stroke-dasharray:3 4}
+.emo-lbl{font:500 10px var(--f-mono);fill:var(--muted)}
+.notes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.panel p{margin:0;color:var(--muted);font-size:13.5px}
+.track{width:100%;border-collapse:collapse;font-size:13px}
+.track th{text-align:left;font:500 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+.track td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.track td:first-child{font-variant-numeric:tabular-nums;color:var(--muted);width:28px}
+.track code{font:500 12px var(--f-mono);color:var(--opp)}
+.track tr.sub td{color:var(--muted)}
+.fx{opacity:.85}.fx.fx-fixed{text-decoration:line-through;text-decoration-color:var(--brand);text-decoration-thickness:1.5px}
+.fxtag{display:inline-block;text-decoration:none;font:500 11px var(--f-mono);background:var(--brand);color:var(--surface);border-radius:4px;padding:1px 6px;margin-left:4px;white-space:nowrap}
+.fx-partly .fxtag{background:var(--surface);color:var(--brand);border:1px solid var(--brand)}
+.progressline{background:var(--conv-soft);border-left:4px solid var(--brand);padding:8px 12px;border-radius:4px;color:var(--ink)!important}
+.linkbtn{background:none;border:0;padding:0;font:inherit;color:var(--brand);text-decoration:underline;cursor:pointer}
+.linkbtn:focus-visible{outline:3px solid var(--conv);outline-offset:2px}
+.qs{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.sect{display:flex;flex-direction:column;gap:10px}
+.tab-actions{margin-left:auto;border-color:var(--brand);color:var(--brand)}
+.afilter{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.acount{font:500 12px var(--f-mono);color:var(--muted)}
+.aprog{flex:1 1 160px;max-width:260px;height:8px;border-radius:4px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.aprog i{display:block;height:100%;background:var(--brand)}
+.aitem.done{background:var(--bg)}
+.aitem.done .atext b{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--sage);text-decoration-thickness:2px}
+.tick{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:var(--brand);color:var(--surface);font-size:11px;margin-right:8px;vertical-align:1px;text-decoration:none}
+.atag.completed{background:var(--brand);border-color:var(--brand);color:var(--surface)}
+.agroup{display:flex;flex-direction:column;gap:8px;padding-top:10px}
+.agroup>h3{font-size:19px;border-top:3px solid var(--sage);padding-top:12px}
+.agroup>p{margin:0;color:var(--muted);font-size:13.5px;max-width:80ch}
+.alist{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.aitem{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:8px 20px;padding:12px 16px;border-top:1px solid var(--line)}
+.aitem:first-child{border-top:0}
+.atext{display:flex;flex-direction:column;gap:2px;min-width:0}
+.atext span{color:var(--muted);font-size:13.5px}
+.ameta{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;justify-content:flex-end}
+.atag{font:500 11.5px var(--f-mono);border:1px solid var(--line);border-radius:4px;padding:2px 7px;white-space:nowrap}
+.atag.j{color:var(--brand);border-color:var(--sage)}
+.atag.when-decide{background:var(--warn-soft);border-color:var(--warn);color:var(--ink)}
+.atag.when-now{background:var(--conv-soft);border-color:var(--conv);color:var(--ink)}
+.atag.when-new{background:var(--bg);border-color:var(--brand);color:var(--ink)}
+@media (max-width:700px){.aitem{grid-template-columns:1fr}.ameta{justify-content:flex-start}.tab-actions{margin-left:0}}
+.sect>p{margin:0;color:var(--muted);font-size:13.5px;max-width:80ch}
+@media (prefers-reduced-motion: no-preference){.view{animation:fade .25s ease}}
+@keyframes fade{from{opacity:.4}to{opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="brandbar" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">rewildingcollective.org · 16 October 2026</span>
+    <h1>User journeys and conversions</h1>
+    <p>How each type of website user finds The Rewilding Collective, decides whether to get involved, and stays involved, both today and in an improved future. The current state reflects the website, forms and emails as they were reviewed on 16 October 2026. Problems fixed since then stay on the maps, marked <span class="fxtag">Fixed 16 Oct</span> or <span class="fxtag" style="background:var(--surface);color:var(--brand);border:1px solid var(--brand)">Partly fixed 16 Oct</span>, so progress is visible against the original review.</p>
+    <p class="progressline" id="progressline"></p>
+    <p><b>How to read this page.</b> Choose a user, then a view. Journey maps read left to right through five stages, from first hearing about TRC to staying involved. Conversion tags such as <span class="chip macro" style="display:inline-flex"><span class="id">FOL-M1</span></span> mark the actions TRC wants users to take and to measure. Every colour on the page is backed by a text label.</p>
+  </header>
+
+  <div class="legend" role="list" aria-label="Key">
+    <span role="listitem"><i aria-hidden="true" class="sw" style="background:var(--conv);border-color:var(--conv)"></i>Main conversion</span>
+    <span role="listitem"><i aria-hidden="true" class="sw" style="border-color:var(--conv)"></i>Supporting step (micro conversion)</span>
+    <span role="listitem"><i aria-hidden="true" class="sw" style="border-color:var(--muted);border-style:dotted"></i>Hand-off to another journey</span>
+    <span role="listitem"><i aria-hidden="true" class="sw" style="background:var(--pain-soft);border-color:var(--pain)"></i>Pain point or drop-off</span>
+    <span role="listitem"><i aria-hidden="true" class="sw" style="background:var(--opp-soft);border-color:var(--opp)"></i>Opportunity or change</span>
+    <span role="listitem"><i aria-hidden="true" class="sw" style="border-color:var(--off);border-style:dashed"></i>Leaves the website (can't be tracked)</span>
+    <span role="listitem"><i aria-hidden="true" class="sw" style="background:var(--warn-soft);border-color:var(--warn)"></i>Decision</span>
+  </div>
+
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+
+  <section class="userhead">
+    <div><h2 id="uname"></h2><p id="udesc"></p></div>
+    <div class="seg" id="seg" role="group" aria-label="Choose a view">
+      <button type="button" data-v="current">Current journey map</button>
+      <button type="button" data-v="flow">User flow (current site)</button>
+      <button type="button" data-v="ideal">Ideal journey map</button>
+    </div>
+  </section>
+
+  <main id="view" class="view" role="tabpanel"></main>
+
+</div>
+
+<script>
+const CONV={
+ "DON-M1":["Gift Completed","macro"],"DON-m1":["Gift Aid Declared","micro"],"DON-m2":["Regular Gift Set Up","micro"],"DON-m3":["Donation Case Viewed","micro"],
+ "PLG-M1":["Pledge Registered","macro"],"PLG-M2":["Shares Purchased","macro"],"PLG-m1":["Prospectus Downloaded","micro"],"PLG-m2":["Pledger Enquiry Sent","micro"],"PLG-m3":["Property Interest Expressed","micro"],"PLG-m4":["Conversation Booked","micro"],"PLG-m5":["Co-ownership Interest Registered","micro"],
+ "SUP-M1":["Event Registered","macro"],"SUP-M2":["Volunteer Registered","macro"],"SUP-m1":["Events Viewed","micro"],"SUP-m2":["Skills Offered","micro"],
+ "FOL-M1":["Newsletter Subscribed","macro"],"FOL-m1":["Social Followed","micro"],"FOL-m2":["Community Joined","micro"]
+};
+const STATUS={live:"Works",partial:"Partial",missing:"Not possible",offsite:"Off-site, untracked",target:"Target",cross:"Hand-off"};
+const STAGES=["Awareness","Consideration","Decision","Onboarding","Retention"];
+const FEEL={"2":"very positive","1":"positive","0":"neutral","-1":"negative","-2":"very negative"};
+
+/* stage: [doing, touchpoints (~ = off-site), thinking, emotion -2..2, conversions [[id,status]], pain, opportunities/changes] */
+const U={
+donor:{name:"Donor",desc:"Gives money to support TRC. The website presents this as general support; the team has discussed donations as funding property acquisition costs (3–8% of property value). There is no live property at the moment. Main goal: Gift Completed (DON-M1).",
+current:[
+ [["Arrives from Google search, Facebook, an event or the newsletter","Sees the Donate button in the header, or 'Will you make a donation?' near the bottom of most pages"],["Any page","Donate button","~Facebook","Newsletter"],"I'd like to support this. What would my money do?",0,[],
+  ["The donation ask sits at the bottom of pages, after the main content","No appeal, target or named purpose, and no live property to fund"],["Say what donations fund wherever the Donate button appears"]],
+ [["Browses the site to judge whether TRC is worth supporting: About, The Team, How Rewilding Works, property pages, Events, Donations","Looks for what TRC has achieved, what it's doing now and how it spends money","Feels more or less motivated depending on the trust signals they find"],["The Rewilding Collective","The Team","How Rewilding Works","Devon","Birdhope","Events","Donations page","~Facebook"],"Are they actually getting things done, and can I trust them with my money?",-1,[["DON-m3","live"]],
+  ["No progress transparency: no news or updates on what TRC has done, is doing now, or plans next","No spending transparency: nothing on how donations have been used or held, and no accounts or annual report","Unclear what donations are for: the page says general charitable work; the team has discussed acquisition costs, but no property has been acquired","Both featured properties (Bearscombe and Birdhope) are no longer viable but still appear live, with no explanation","Stale or unfinished content: 'As of September 2024', a 'May 13th' drop-in, an 'Under construction' page","The Team page and the welcome email list different people: the email names Nick Davy as a director and Third Sector Accountancy as financial advisors, neither of which is on the website; the website lists Tom Amey as a trustee, who isn't in the email","Unfinished policies and legal pages: the Privacy Policy, Terms and Cookie Policy all have placeholder text for the registered address or registration number, and the Legal and Financial Framework page is lorem ipsum (see 'Policies and legal pages')","The progress that does exist (>600 subscribers, ~3,000 on social, active local groups, monthly field trips) is only in emails and on Facebook"],["A progress page: what TRC has done, is doing and will do next","A 'Where your donations go' breakdown, updated regularly","Explain Bearscombe and Birdhope on a Previous prospects page","Complete every policy: registration number, registered address, and real content for the Legal and Financial Framework","Bring the email and Facebook progress figures onto the site","Build on the trust signals that already work: the expert team, the IUCN-informed Birdhope assessment, the Gift Aid FAQ"]],
+ [["Clicks Donate and leaves the site for 'The Rewilding Collective Donation Form' (Google Forms)","Enters email, name and county, and chooses whether to claim Gift Aid","If claiming Gift Aid: confirms tax status and gives a home address","Answers the newsletter question","Submits, then clicks a raw Stripe link and pays on Stripe"],["~Google Form (2–3 pages)","~Stripe payment page"],"I've filled in a form, and now I have to pay somewhere else?",-2,[["DON-m1","offsite"],["DON-M1","offsite"]],
+  ["Two separate off-site steps: a Google Form, then a Stripe page","The payment link is a raw URL (buy.stripe.com/…) in the confirmation text","The amount isn't asked on the form, so Gift Aid declarations have to be matched to Stripe payments by hand","Donors can complete the form and never pay, and nothing follows up","See 'Donation form and payment friction' below for the full list"],["One donation flow capturing amount, Gift Aid, newsletter consent and payment together"]],
+ [["Is redirected to /donation-success after paying","Receives a Stripe receipt email","If they opted in: gets the Mailchimp welcome email (see the Follower journey)"],["Donation success page","Stripe receipt email","Welcome email"],"Thanks, but what happens to my money now?",0,[["FOL-M1","cross"]],
+  ["The thank-you page is general: 'As our work develops, we'll share stories…'","The Stripe receipt is a bare receipt from 'The Rewilding Collective Ltd': no thank-you, no Gift Aid status, nothing on how the gift will be used"],["Thank-you page and receipt say what the gift funds and when the donor will hear more"]],
+ [["Hears nothing about the donation itself","If subscribed, gets occasional newsletters"],["Newsletter (occasional)"],"Where did my donation go?",-1,[["DON-m2","missing"]],
+  ["No report back on how donations have been used","No total raised or progress shown","No regular-giving option"],["Annual 'where your donations went' update","Monthly giving option"]]
+],
+notes:[
+ {title:"How a donation is taken today",items:[
+  "<b>Why it works this way:</b> the GoDaddy website builder doesn't allow forms, so donations run through Google Forms and Stripe.",
+  "<b>1. Donations page:</b> 'Donate' opens a Google Form (forms.gle), so the donor leaves the website.",
+  "<b>2. Google Form, page 1:</b> email, first name, surname, county (all required) and 'Would you like us to claim Gift Aid on your donation?'.",
+  "<b>3. Gift Aid section (only if Yes):</b> UK taxpayer confirmation, Address Line 1, 2 (required), 3, Town and Postcode.",
+  "<b>4. Newsletter section (every donor):</b> 'Would you like to subscribe to our newsletter' (required).",
+  "<b>5. Submit page:</b> 'Click Submit to finish'.",
+  "<b>6. Confirmation:</b> 'Please follow the link to complete your payment…' with a raw buy.stripe.com link.",
+  "<b>7. Stripe Payment Link:</b> 'Donation to The Rewilding Collective', amount from £0.00, email again, then Apple Pay, Link, Amazon Pay, card or Revolut Pay.",
+  "<b>8. Redirect</b> to rewildingcollective.org/donation-success, where the progress banner shows step 3, Success.",
+  "<b>9. Stripe receipt email</b> from 'The Rewilding Collective Ltd'.",
+  "<b>10. Mailchimp welcome email,</b> if the donor opted in to the newsletter (Follower journey)."]},
+ {title:"Donation form and payment friction",items:[
+  "<b>Leaves the website twice:</b> first for Google Forms, then for Stripe.",
+  "<b>Google account shown</b> at the top with 'Switch accounts', which can make donors think their Google identity is being collected.",
+  "<b>County is required</b> and uses the same long, incomplete list as the newsletter form. It isn't needed for a donation.",
+  "<b>Gift Aid tax confirmation uses checkboxes,</b> so 'Yes' and 'No' can both be ticked.",
+  "<b>Address Line 2 is required,</b> though many addresses don't have one. Donors type filler to get past it.",
+  "<b>Raw payment link:</b> the confirmation shows a long buy.stripe.com URL rather than a 'Pay now' button.",
+  "<b>Stripe asks for email again,</b> starts at £0.00 with no suggested amounts, and has no monthly option.",
+  "<b>Form and payment aren't linked.</b> The amount isn't on the form, and the donor may use a different email on Stripe. Matching Gift Aid declarations to payments is manual and error-prone.",
+  "<b>Abandoned payments are invisible.</b> Someone can submit the form and never pay, and no reminder is sent.",
+  "<b>What works:</b> Stripe is trusted and offers wallet payments; the Gift Aid wording covers the HMRC declaration; the three-step progress banner sets expectations; every donor is offered the newsletter; the redirect to /donation-success works, with links to How Rewilding Works, Community Shares (/how) and Facebook and YouTube."]},
+ {title:"Policies and legal pages",items:[
+  "<b>Privacy Policy</b> (/privacy-policy-1): 'Registered office: [INSERT REGISTERED OFFICE ADDRESS]' and 'Community Benefit Society registration number: [INSERT REGISTRATION NUMBER]'. The placeholder address appears again where it says where to send requests about personal information.",
+  "<b>Terms and Conditions</b> (last updated July 2026): contact details read 'The Rewilding Collective, [registered address]'.",
+  "<b>Cookie Policy</b> (last updated July 2026): contact details also read '[registered address]'.",
+  "<b>Legal and Financial Framework</b> (/legal-&-financial): every section is lorem ipsum placeholder text ('Text', 'More text'). The page isn't in the menu, but it is in the sitemap, so Google can find it.",
+  "<b>Why it matters for donors:</b> these are the pages a careful donor checks before giving. Placeholder text suggests the organisation isn't fully set up, just when the donor is deciding whether to trust TRC with money.",
+  "<b>Also missing:</b> no registration number anywhere else on the site, and no accounts or annual report."]},
+ {title:"Transparency gaps",items:[
+  "<b>Purpose:</b> the website says donations support general charitable work. The team has discussed them as funding acquisition costs. Donors can't tell which.",
+  "<b>Use of funds:</b> no property has been acquired, and nothing on the site says how donations received so far have been used or held. The team doesn't know either.",
+  "<b>Accountability:</b> no registration number, registered address, accounts or annual report. See 'Policies and legal pages'.",
+  "<b>Naming (minor):</b> the site says Charitable Community Benefit Society; Stripe and the receipt say 'The Rewilding Collective Ltd'. Societies can legally use 'Limited', so this is fine, but showing the full registered name and number in one place would avoid confusion."]}
+],
+ideal:[
+ [["Sees why TRC needs donations now, next to every Donate button, on Facebook and in the newsletter"],["Donate button","Facebook","Newsletter"],"I can see what my money would do.",1,[],
+  null,["A short line beside every Donate button saying what donations fund"]],
+ [["Browses the site and sees recent progress, current activity and next steps","Reads what donations pay for now, and how past donations have been used","Finds clear trust signals and feels motivated to give"],["Progress page","Where your donations go","Current prospects","Previous prospects","The Team","Donations page"],"They're active, open about money, and I trust them.",1,[["DON-m3","target"]],
+  null,["Progress page with regular updates on what TRC has done, is doing and plans next","Donations page states the current use of funds, and the plan for acquisition costs (3–8% of property value) once a property is found","Simple breakdown of donations received and spent to date","Registration number, registered address and a link to accounts","All policies complete, with no placeholder text; Legal and Financial Framework written or unpublished"]],
+ [["Chooses an amount from suggestions, one-off or monthly","Claims Gift Aid with a single yes/no, giving a home address only if claiming","Opts in to the newsletter","Pays in one flow"],["Single donation checkout"],"Quick, and I know it's secure.",2,[["DON-M1","target"],["DON-m1","target"],["DON-m2","target"]],
+  null,["Because GoDaddy can't host forms, one hosted checkout that captures amount, Gift Aid and newsletter consent with the payment (e.g. Stripe Checkout with custom fields, or a charity donation platform)","Suggested amounts and a monthly option","No county question; Address Line 2 optional","Newsletter opt-in offered to every donor"]],
+ [["Lands on the thank-you page","Gets a receipt confirming Gift Aid status and what the gift funds"],["Thank-you page","Receipt or thank-you email"],"Thanked, and I know what happens next.",2,[["FOL-M1","cross"]],
+  null,["Customised receipt, or a thank-you email from Chris and Leilani"]],
+ [["Gets a yearly update on what donations achieved","Hears when a property is found and how donations helped"],["Newsletter","Donor update email"],"My money made a difference.",2,[["SUP-M1","cross"],["PLG-M1","cross"]],
+  null,["Annual donor impact update","Invitations to events, and to pledge once a property is live"]]
+],
+flow:{nodes:[
+ {id:"en",c:0,r:1,k:"entry",t:"Search, Facebook, event, newsletter"},
+ {id:"pg",c:1,r:1,k:"page",t:"Any page: Donate button"},
+ {id:"dn",c:2,r:1,k:"page",t:"Browses site content and Donations page",tag:"DON-m3"},
+ {id:"q1",c:3,r:1,k:"decision",t:"Motivated and confident?"},
+ {id:"lv",c:4,r:0,k:"drop",t:"Leaves: no progress or spending transparency"},
+ {id:"gf",c:4,r:1,k:"offsite",t:"Google Donation Form: details, Gift Aid?"},
+ {id:"ga",c:5,r:0,k:"offsite",t:"Gift Aid: tax, address",tag:"DON-m1"},
+ {id:"nl",c:5,r:2,k:"offsite",t:"Newsletter question (every donor)"},
+ {id:"sb",c:6,r:1,k:"offsite",t:"Submit; confirmation shows raw Stripe link"},
+ {id:"q2",c:7,r:1,k:"decision",t:"Clicks the link?"},
+ {id:"ab",c:8,r:0,k:"drop",t:"Never pays; no follow-up"},
+ {id:"st",c:8,r:1,k:"offsite",t:"Stripe page: amount from £0.00, email again"},
+ {id:"cv",c:9,r:1,k:"macro",t:"Gift Completed",tag:"DON-M1"},
+ {id:"we",c:10,r:0,k:"page",t:"Welcome email, if opted in",tag:"FOL-M1",cross:1},
+ {id:"ds",c:10,r:1,k:"page",t:"/donation-success page"},
+ {id:"rc",c:10,r:2,k:"offsite",t:"Stripe receipt email"},
+ {id:"rg",c:9,r:2,k:"drop",t:"No monthly option",tag:"DON-m2",miss:1}
+],edges:[["en","pg"],["pg","dn","Donate"],["dn","q1"],["q1","lv","No","pain"],["q1","gf","Donate","off"],["gf","ga","Gift Aid: yes","off"],["gf","nl","No","off"],["ga","nl","","off"],["nl","sb","","off"],["sb","q2"],["q2","ab","No","pain"],["q2","st","Yes","off"],["st","cv","Pay","off"],["cv","we"],["cv","ds","redirect"],["cv","rc","","off"]]},
+idealFlow:{nodes:[
+ {id:"en",c:0,r:1,k:"entry",t:"Search, Facebook, event, newsletter"},
+ {id:"pg",c:1,r:1,k:"page",t:"Any page: Donate + what it funds"},
+ {id:"dn",c:2,r:1,k:"page",t:"Donations: use of funds, impact, registration",tag:"DON-m3"},
+ {id:"co",c:3,r:1,k:"form",t:"Single checkout: amount, frequency"},
+ {id:"ga",c:4,r:0,k:"micro",t:"Gift Aid yes/no (+ address)",tag:"DON-m1"},
+ {id:"rg",c:4,r:2,k:"micro",t:"Monthly gift chosen",tag:"DON-m2"},
+ {id:"cv",c:5,r:1,k:"macro",t:"Gift Completed",tag:"DON-M1"},
+ {id:"ty",c:6,r:1,k:"page",t:"Thank-you page + branded receipt"},
+ {id:"nl",c:7,r:0,k:"page",t:"Newsletter opt-in",tag:"FOL-M1",cross:1},
+ {id:"up",c:7,r:2,k:"page",t:"Annual donor impact update"}
+],edges:[["en","pg"],["pg","dn"],["dn","co","Donate"],["co","ga"],["co","rg"],["co","cv"],["ga","cv"],["rg","cv"],["cv","ty"],["ty","nl"],["ty","up"]]},
+track:[["Donate button clicked","","donate_click (page)"],["Donations page viewed","DON-m3","donation_page_view"],["Checkout started","","checkout_start"],["Gift completed","DON-M1","donation_complete (value, frequency)"],["Gift Aid declared","DON-m1","gift_aid_declared"],["Regular gift set up","DON-m2","donation_complete with frequency = monthly"],["Also: checkout abandoned","","checkout_abandoned"]]
+},
+
+pledger:{name:"Pledger",desc:"Pledges £10k for a shareholding in properties TRC acquires. There is no live property at the moment. Main goals: Pledge Registered (PLG-M1), then Shares Purchased (PLG-M2).",
+current:[
+ [["Hears about co-owning land through Facebook, search, an event or word of mouth","Reads the home page: TRC 'sells community shares and uses these investments to buy farms'","Clicks the Birdhope banner"],["~Facebook","Home page","Birdhope","Event (Totnes drop-in)"],"Could I actually co-own land for nature?",1,[],
+  ["The home page banner promotes Birdhope, which is no longer viable","The Birdhope page doesn't mention shares, price or how to join"],["Lead with the co-ownership model rather than a single property","Say plainly that there's no live property yet, and how to register interest"]],
+ [["Reads The Rewilding Collective page, the Devon page and How it works (/how)","Opens the five documents on How Rewilding Works, including the draft Share Prospectus","Tries to work out what a share costs, what they'd own, and whether anything is happening"],["The Rewilding Collective","Devon","How it works (/how)","How Rewilding Works","~Google Drive","The Team"],"How much is a share, what would I actually own, and is this still going ahead?",-1,[["PLG-m1","offsite"]],
+  ["Three different share figures: ~£10,000 per share (~one acre); a £10,000 minimum plus £1,000 towards costs, up to £100,000; and £10k in TRC's own brief (see 'Share figures')","No live property, but Bearscombe (Devon) and Birdhope are still shown as current opportunities","Out-of-date progress: '£350,000 of pledged funds' as of September 2024. Newer figures from a recent newsletter aren't on the site","The Team page and the welcome email list different people: the email names Nick Davy as a director and Third Sector Accountancy as financial advisors, neither of which is on the website; the website lists Tom Amey as a trustee, who isn't in the email","The welcome email says TRC 'is forming as' a Charitable Community Benefit Society; the website says it is one","The Share Prospectus is a draft from October 2025, on Google Drive, with no summary or introduction","/how says 'We are preparing legal and financial toolkits', and the Legal and Financial Framework page is lorem ipsum","Policies still have placeholder registration number and address, just when a pledger is deciding whether to invest"],["One share offer statement used on every page and document","A current status: no live property, pledges so far, groups forming","Final prospectus, with a plain-English summary on the site","Complete the legal and policy pages","Keep what already builds trust (see 'What builds pledger confidence')"]],
+ [["Looks for a way to pledge and finds no pledging form","Registers interest through the newsletter and contact form ('Get in touch', 'Join newsletter') or via Facebook","Is sent a link to TRC's Discord server (the Devon page also links to it)","Opens Discord in a new app or browser page, creates an account, and finds the right channel","Talks with Leilani in Discord, then submits a pledger form there"],["~Newsletter and contact form","~Facebook","~Discord","~Pledger form (in Discord)"],"Why do I have to join Discord to pledge? How does this even work?",-2,[["PLG-m5","missing"],["PLG-m3","partial"],["PLG-m2","offsite"],["PLG-M1","offsite"]],
+  ["No co-ownership interest form on the live website, so there's nowhere to say 'I want to pledge'","Pledging interest arrives mixed in with newsletter sign-ups and general contact","Neither the welcome email nor the Facebook page's About section links to Discord, so it's unclear how most people get the invite","Discord means leaving the website for a new app or browser page, creating an account and learning how servers and channels work. That's a big barrier for a target audience largely over 50","The Devon page asks people to use their real name on Discord, with no explanation of who will see it","The pledger form sits inside Discord, so pledges can't be tracked from the website"],["A dedicated co-ownership interest form on the website, separate from the newsletter","A phone or video call as the first conversation, instead of Discord","The pledger form on the website"]],
+ [["Waits for the pledger form to be accepted","Speaks with Chris in person to arrange the pledge"],["~Discord","In person with Chris"],"Is my pledge confirmed? What exactly have I committed to?",-1,[["PLG-m4","partial"]],
+  ["No written confirmation of the pledge or its terms","The process depends on Leilani and Chris personally, which won't scale, and Chris is overseas from November (WhatsApp to a New Zealand number)","The welcome email's involvement checklist can't be answered: the ❏ boxes aren't clickable and there's no reply link","No way to book a call","The Events page shows only the Totnes drop-in, with an out-of-date 'May 13th'; field trips appear only on Facebook"],["Written pledge confirmation setting out terms and next steps","Book-a-call link, with video as an option","Field trips listed on the Events page"]],
+ [["Follows along in Discord, Facebook and occasional newsletters","Waits for a property and a share offer"],["~Discord","~Facebook","Newsletter (occasional)"],"When will there be something to invest in?",-1,[["PLG-M2","missing"]],
+  ["No pledge status, timeline or share offer date","When a prospect falls through, nothing on the website explains it","Updates for pledgers live in Discord, so those who don't use it miss out","There is no share offer to apply for, and no online route when there is one"],["Regular pledger updates by email, including when a prospect falls through and why","Online share application when an offer opens"]]
+],
+notes:[
+ {title:"How a pledge happens today",items:[
+  "<b>1. Interest:</b> the person uses the newsletter and contact form or contacts TRC on Facebook. There is no dedicated pledging form.",
+  "<b>2. Discord invite:</b> they're sent a link to TRC's Discord server. The Devon page also links to Discord; the welcome email and the Facebook About section don't.",
+  "<b>3. Discord:</b> they open a new app or browser page, create an account (the Devon page asks for their real name) and find the right channel.",
+  "<b>4. Conversation:</b> Leilani talks with them in Discord.",
+  "<b>5. Pledger form:</b> they submit a pledger form inside Discord.",
+  "<b>6. Acceptance:</b> TRC reviews and accepts the form.",
+  "<b>7. In person:</b> Chris talks with them in person to facilitate the pledge.",
+  "<b>8. Share purchase:</b> not yet possible, as there's no live property or share offer.",
+  "<b>Missing conversion point:</b> a co-ownership interest form (PLG-m5) would let TRC see and measure pledging interest at step 1. One was drafted, but it isn't on the live website."]},
+ {title:"Share figures on the site",items:[
+  "<b>The Rewilding Collective page:</b> 'Each share will represent ~one acre and we expect the cost to be around £10,000.'",
+  "<b>Devon page:</b> 'a minimum shareholding of £10,000 (plus a further £1,000 to go towards purchase and development costs), up to a maximum of £100,000.'",
+  "<b>TRC's brief:</b> pledgers donate £10k for a shareholding in acquired properties.",
+  "<b>Welcome email:</b> 'Each share will represent about one acre and we expect the cost to be around £10,000 per share', matching The Rewilding Collective page.",
+  "<b>Pledges so far:</b> The Rewilding Collective page says '£350,000 of pledged funds' as of September 2024. A recent newsletter mentions 'sufficient pledgers to purchase an ~25 acre block' in Devon and a group of 45 around Northumberland.",
+  "<b>Why it matters:</b> a pledger can't tell whether a share costs £10,000 or £11,000, whether it buys an acre, or what the £1,000 covers. Unclear money terms are a common reason people don't invest."]},
+ {title:"Pledger documents",items:[
+  "<b>On How Rewilding Works:</b> Information sheet, Governance Factsheet, Rewilding Factsheet, Rules and our Vision, Purpose and Aims, and Share Prospectus (draft Oct 2025).",
+  "<b>Also linked:</b> 'Download our info sheet' on The Rewilding Collective page, and a sociocracy document from the Devon page.",
+  "<b>All on Google Drive,</b> so downloads can't be tracked, and the page has no introduction saying what each document is for or which to read first.",
+  "<b>Not reviewed here:</b> the contents of the documents themselves. Worth checking that their share figures match the website."]},
+ {title:"What builds pledger confidence",items:[
+  "<b>Our Promise</b> on The Rewilding Collective page: legally co-own the land, have a say, see clear impact, camp on the land, lease a growing area.",
+  "<b>Safeguards:</b> land value checked by a RICS surveyor, a Section 103 Conservation Covenant so the land can never be developed or intensively farmed, and a restriction on companies using shares for greenwashing.",
+  "<b>Honesty about risk:</b> 'future land value cannot be gauged'.",
+  "<b>The team:</b> The Team page lists three trustees (Chris Bone, Ash Brown, Tom Amey) and four advisors (governance, legal, planning and ecology, including Dr Philip Ashmole MBE). The welcome email adds a director, Nick Davy, and financial advisors, Third Sector Accountancy.",
+  "<b>Personal contact:</b> speaking with Leilani and Chris directly is a real strength. The problem is the route to them, not the people.",
+  "<b>These are buried</b> partway down long pages. In the ideal journey they sit alongside the share offer."]}
+],
+ideal:[
+ [["Hears about co-owning land for nature and lands on a clear explanation of the model"],["Home page","Search","Facebook","Events"],"I could co-own land for nature.",1,[],
+  null,["Home page leads with the co-ownership model and current status","Property banners only when a property is live"]],
+ [["Reads one 'How community shares work' page with a single set of figures","Sees current status: no live property yet, pledges so far, groups forming, previous prospects","Reads a prospectus summary and downloads the prospectus from the site"],["How community shares work","Current prospects","Previous prospects","Prospectus","The Team"],"The terms are clear, and they're honest about where things stand.",1,[["PLG-m1","target"],["PLG-m3","target"]],
+  null,["One share offer statement used on every page and document","Status panel: pledges to date, people in each group, next steps","Final prospectus with an on-site summary and tracked download","Our Promise, safeguards and risks shown next to the share offer","The Team page and the welcome email list the same directors, trustees and advisors, including the financial advisors","Completed legal and policy pages"]],
+ [["Fills in a short co-ownership interest form on the website","Has a phone or video call with Leilani, or joins an online information session","Submits the pledger form on the website"],["Co-ownership interest form","Call or info session","Pledger form"],"I've spoken to a real person, and my pledge is recorded. I know it isn't binding yet.",2,[["PLG-m5","target"],["PLG-m4","target"],["PLG-M1","target"]],
+  null,["Dedicated co-ownership interest form, separate from the newsletter, sending responses to one inbox the team checks","Phone or video call as the first conversation, instead of Discord","Pledger form on the website, with an on-screen and email confirmation","Clear statement that a pledge isn't binding until a share offer opens"]],
+ [["Gets written confirmation of the pledge and its terms","Meets Chris, in person or by video, to arrange the pledge","Receives a pledger welcome pack, and can join the pledger Discord if they want"],["Confirmation email","Meeting with Chris","Welcome pack","Discord (optional)"],"I'm part of a group now, and I know what happens next.",2,[["SUP-M1","cross"],["FOL-m2","cross"]],
+  null,["Written pledge confirmation","Video option, so meetings don't depend on where Chris is","Discord offered as an optional community, with a simple how-to guide","Pledger welcome email with current contact details"]],
+ [["Gets regular pledger updates by email, including prospects that fall through and why","Applies for shares online when an offer opens"],["Pledger updates","Share application"],"I'm kept informed, and ready when a property comes up.",2,[["PLG-M2","target"]],
+  null,["Regular pledger update by email, for example monthly","Online share application, with reminders to turn pledges into purchases"]]
+],
+flow:{nodes:[
+ {id:"fb",c:0,r:0,k:"offsite",t:"Facebook page"},
+ {id:"en",c:0,r:1,k:"entry",t:"Search, event, word of mouth"},
+ {id:"hm",c:1,r:1,k:"page",t:"Home, The Rewilding Collective, documents"},
+ {id:"dv",c:1,r:2,k:"page",t:"Devon page: Discord link (no longer viable)"},
+ {id:"q1",c:2,r:1,k:"decision",t:"Wants to pledge?"},
+ {id:"ci",c:3,r:1,k:"drop",t:"No co-ownership interest form",tag:"PLG-m5",miss:1},
+ {id:"gf",c:3,r:0,k:"offsite",t:"Newsletter and contact form",tag:"PLG-m3"},
+ {id:"inv",c:4,r:0,k:"offsite",t:"Sent a Discord link (route unclear)"},
+ {id:"dc",c:5,r:1,k:"offsite",t:"Discord: new app, account, channels"},
+ {id:"gu",c:5,r:2,k:"drop",t:"Gives up: Discord unfamiliar"},
+ {id:"lei",c:6,r:1,k:"offsite",t:"Conversation with Leilani",tag:"PLG-m2"},
+ {id:"pf",c:7,r:1,k:"offsite",t:"Pledger form in Discord"},
+ {id:"acc",c:8,r:1,k:"decision",t:"Accepted?"},
+ {id:"cv",c:9,r:1,k:"macro",t:"Pledge Registered (in Discord)",tag:"PLG-M1"},
+ {id:"ch",c:10,r:1,k:"page",t:"Chris meets them in person",tag:"PLG-m4"},
+ {id:"so",c:11,r:1,k:"drop",t:"No share offer yet",tag:"PLG-M2",miss:1}
+],edges:[["en","hm"],["fb","q1","message","off"],["en","dv"],["hm","q1"],["q1","ci","Looks for a form","pain"],["q1","gf","Get in touch","off"],["gf","inv","","off"],["inv","dc","","off"],["dv","dc","Discord link","off"],["dc","gu","","pain"],["dc","lei","","off"],["lei","pf","","off"],["pf","acc","","off"],["acc","cv","Yes"],["cv","ch"],["ch","so","","pain"]]},
+idealFlow:{nodes:[
+ {id:"en",c:0,r:1,k:"entry",t:"Search, Facebook, events, newsletter"},
+ {id:"hm",c:1,r:1,k:"page",t:"Home: co-ownership model + status"},
+ {id:"st",c:2,r:0,k:"page",t:"Current and previous prospects"},
+ {id:"sh",c:2,r:1,k:"page",t:"How community shares work"},
+ {id:"pr",c:3,r:0,k:"form",t:"Prospectus summary + download",tag:"PLG-m1"},
+ {id:"ci",c:3,r:1,k:"micro",t:"Co-ownership interest form",tag:"PLG-m5"},
+ {id:"eq",c:3,r:2,k:"form",t:"On-site enquiry form",tag:"PLG-m2"},
+ {id:"call",c:4,r:1,k:"form",t:"Call or video with Leilani",tag:"PLG-m4"},
+ {id:"pf",c:5,r:1,k:"form",t:"Pledger form on the website"},
+ {id:"cv",c:6,r:1,k:"macro",t:"Pledge Registered",tag:"PLG-M1"},
+ {id:"cf",c:7,r:1,k:"page",t:"Written confirmation + meeting with Chris"},
+ {id:"dc",c:7,r:2,k:"page",t:"Optional pledger Discord",tag:"FOL-m2",cross:1},
+ {id:"up",c:8,r:1,k:"page",t:"Regular pledger updates by email"},
+ {id:"so",c:9,r:1,k:"form",t:"Share offer opens: apply online"},
+ {id:"sp",c:10,r:1,k:"macro",t:"Shares Purchased",tag:"PLG-M2"}
+],edges:[["en","hm"],["hm","st"],["hm","sh"],["st","pr"],["sh","pr"],["sh","ci","Register interest"],["sh","eq","Questions"],["pr","ci"],["eq","call"],["ci","call"],["call","pf"],["pf","cv"],["cv","cf"],["cf","dc"],["cf","up"],["up","so"],["so","sp"]]},
+track:[["Share information viewed","","shares_info_view"],["Prospectus downloaded","PLG-m1","prospectus_download"],["Co-ownership interest registered","PLG-m5","coownership_interest_submitted (region)"],["Call booked","PLG-m4","call_booked"],["Pledger form submitted","","pledger_form_submitted"],["Pledge registered","PLG-M1","pledge_accepted (region, shares)"],["Shares purchased","PLG-M2","share_application_complete"],["Also: interest in a region or prospect","PLG-m3","property_interest"],["Also: enquiry sent","PLG-m2","enquiry_submitted"]]
+},
+
+supporter:{name:"Supporter",desc:"Wants to attend events or volunteer. Main goals: Event Registered (SUP-M1) and Volunteer Registered (SUP-M2).",
+current:[
+ [["Sees an event on Facebook, hears about one by word of mouth, or finds the Totnes Climate Hub drop-in","Sees Events in the website menu","Reads that TRC is 'open for enquiries' from trustees and advisors"],["~Facebook events","Word of mouth","Home page","Events page"],"There's something happening. Can I go, or help?",0,[],
+  ["Events are posted on Facebook, not on the website","Volunteering isn't in the menu, and the home page only mentions trustees and advisors"],["List every event on the website","Add 'Get involved' to the menu"]],
+ [["Opens the Events page to see what's on","Looks for ways to volunteer and finds only scattered mentions","Tries to work out what volunteering involves, and whether it's open to non-shareholders"],["Events page","The Rewilding Collective","How it works (/how)","Donations FAQ","Devon"],"What's coming up near me? What would I actually be volunteering for?",-1,[["SUP-m1","live"]],
+  ["The Events page is out of date and never updated: it lists one Totnes drop-in, with 'May 13th' as the next meeting, and none of the Facebook events (e.g. Avon Valley natural flood management field trip, 18 Oct)","Typo: 'Or next meeting' for 'Our next meeting'","No volunteering page, roles, time commitment or location","Volunteering is described mainly as something shareholders do on land they own, and there's no land yet (see 'Volunteering on the website')"],["Keep the Events page current, with every event and its date, place and type","A volunteering page with clear roles, written by the team"]],
+ [["To attend: finds the event on TRC's Facebook page and responds there, which needs a Facebook account","Or turns up at a Totnes drop-in","To volunteer: joins Discord or emails, from the Devon page, or uses the newsletter and contact form"],["~Facebook events","In person","~Discord","~Email","~Newsletter and contact form"],"Do I really have to join Facebook? And who do I tell that I want to help?",-2,[["SUP-M1","offsite"],["SUP-M2","missing"],["SUP-m2","offsite"]],
+  ["People without Facebook can't see or respond to most events","No event registration on the website","No volunteer form; interest goes through Discord, email or the general newsletter form","Nothing tells a volunteer what happens after they get in touch"],["Event registration that doesn't need Facebook","A short volunteer form linked from the website"]],
+ [["Goes to the event, or waits to hear back about volunteering"],["In person","~Facebook","~Email"],"Is this still on? Has anyone picked up my offer to help?",-1,[],
+  ["No confirmation, reminder or calendar invite from the website","No welcome or induction for volunteers"],["Confirmation and reminder emails","A short welcome for new volunteers"]],
+ [["Hears about the next event only if they check Facebook"],["~Facebook","Newsletter (occasional)"],"When's the next one? What else can I do?",-1,[],
+  ["No follow-up after an event","No route from supporter to follower, donor or pledger","Occasional newsletters don't list upcoming events"],["Post-event follow-up with photos, the next dates and a newsletter sign-up","Upcoming events in every newsletter"]]
+],
+notes:[
+ {title:"Events: website vs Facebook",items:[
+  "<b>Website Events page:</b> one recurring drop-in at Totnes Climate Hub (11am–1pm, second Wednesday, November to April, with Leilani; Chris weekly from May). The 'next meeting' is still given as 'May 13th'.",
+  "<b>Facebook page:</b> posts current events, for example the Avon Valley natural flood management field trip on Sun 18 Oct, Watkins Wood car park, Loddiswell.",
+  "<b>Effect:</b> to find and attend events, a supporter has to find TRC's Facebook page, and needs a Facebook account to respond. Anyone who isn't on Facebook, or only checks the website, misses them.",
+  "<b>Monthly Devon field trips</b> are mentioned in a newsletter but not on the website."]},
+ {title:"Volunteering on the website",items:[
+  "<b>Home page:</b> 'We are open for enquiries for people looking to co-own and rewild land with us as well as trustees and advisors.'",
+  "<b>The Rewilding Collective page:</b> 'Everyone is invited to participate directly in the work on the land and the supportive tasks like applying for grants.' It also expects investors to do most of the work on each site as volunteers.",
+  "<b>How it works (/how):</b> 'Shareholders who want to can volunteer for hands on tasks on the land.'",
+  "<b>Donations FAQ:</b> 'You can also support the initiative by volunteering…', with no link or explanation.",
+  "<b>Devon page:</b> 'lend your expertise… join our Discord'.",
+  "<b>Welcome email:</b> one checkbox, 'I'd like to support make this happen with other essential tasks.'",
+  "<b>What's missing:</b> what the roles are, who they're for (shareholders or anyone), where and when, how much time, and how to sign up. With no land yet, hands-on volunteering on a site isn't possible, so the open roles are presumably things like grant writing, events and expertise. The team needs to define these before the website can describe them."]}
+],
+ideal:[
+ [["Sees an event or volunteering appeal on the website, Facebook or in the newsletter"],["Events page","Get involved page","Facebook","Newsletter"],"There's something I can join, and I can see how.",1,[],
+  null,["'Get involved' in the main menu, covering events and volunteering","Every event posted on the website as well as Facebook"]],
+ [["Browses upcoming events by date, place and type","Reads the current volunteer roles and what each involves"],["Events page","Volunteer roles"],"I can see what's on, and exactly how I could help.",1,[["SUP-m1","target"]],
+  null,["Events page kept current: drop-ins, field trips, online sessions","Volunteer roles defined by the team, with who they're for, time needed and location","Clear note on which roles are open now, before there's any land"]],
+ [["Registers for an event without needing Facebook","Fills in a short volunteer form, choosing a role and saying what skills they offer"],["Event registration","Volunteer form"],"Easy, and I've had a confirmation.",2,[["SUP-M1","target"],["SUP-M2","target"],["SUP-m2","target"]],
+  null,["Event registration through a booking tool linked from the website","Volunteer form hosted off the website (GoDaddy can't host forms), with replies going to one inbox the team checks"]],
+ [["Gets a confirmation, a calendar invite and a reminder","New volunteers get a welcome and a named contact"],["Confirmation email","Reminder","Volunteer welcome"],"I know where to be, and who to talk to.",2,[],
+  null,["Automatic confirmation and reminder emails","A short volunteer welcome with a named contact"]],
+ [["Gets photos and the next dates after an event","Is invited to subscribe, donate or pledge"],["Follow-up email","Newsletter"],"I want to keep coming back.",2,[["FOL-M1","cross"],["PLG-M1","cross"]],
+  null,["Post-event follow-up","Upcoming events in every newsletter"]]
+],
+flow:{nodes:[
+ {id:"fb",c:0,r:0,k:"offsite",t:"Facebook events"},
+ {id:"en",c:0,r:2,k:"entry",t:"Word of mouth, search, newsletter"},
+ {id:"hm",c:1,r:2,k:"page",t:"Home page"},
+ {id:"acc",c:1,r:0,k:"decision",t:"Has Facebook?"},
+ {id:"nofb",c:2,r:1,k:"drop",t:"Can't see or respond to events"},
+ {id:"rsvp",c:2,r:0,k:"offsite",t:"Responds on Facebook",tag:"SUP-M1"},
+ {id:"ev",c:2,r:2,k:"page",t:"Events page: one Totnes drop-in",tag:"SUP-m1"},
+ {id:"st",c:3,r:2,k:"drop",t:"Out of date: 'May 13th', no other events"},
+ {id:"vol",c:2,r:3,k:"drop",t:"No volunteering page or roles",tag:"SUP-M2",miss:1},
+ {id:"dv",c:2,r:4,k:"page",t:"Devon page: 'lend your expertise'"},
+ {id:"dc",c:3,r:4,k:"offsite",t:"Discord or email",tag:"SUP-m2"},
+ {id:"tu",c:4,r:2,k:"page",t:"Turns up in Totnes, or gives up"},
+ {id:"nf",c:5,r:1,k:"drop",t:"No reminder or follow-up"}
+],edges:[["fb","acc"],["acc","nofb","No","pain"],["acc","rsvp","Yes","off"],["en","hm"],["hm","ev","Events"],["ev","st","","pain"],["hm","vol","Volunteer?","pain"],["hm","dv"],["dv","dc","","off"],["st","tu"],["rsvp","nf","","off"],["tu","nf","","pain"]]},
+idealFlow:{nodes:[
+ {id:"en",c:0,r:1,k:"entry",t:"Facebook, newsletter, word of mouth"},
+ {id:"gi",c:1,r:1,k:"page",t:"Get involved page"},
+ {id:"ev",c:2,r:0,k:"page",t:"Events page, kept current",tag:"SUP-m1"},
+ {id:"vr",c:2,r:2,k:"page",t:"Volunteer roles"},
+ {id:"ed",c:3,r:0,k:"page",t:"Event detail: date, place, type"},
+ {id:"vf",c:3,r:2,k:"form",t:"Volunteer form: role and skills",tag:"SUP-m2"},
+ {id:"rf",c:4,r:0,k:"form",t:"Register (no Facebook needed)"},
+ {id:"vc",c:4,r:2,k:"macro",t:"Volunteer Registered",tag:"SUP-M2"},
+ {id:"ec",c:5,r:0,k:"macro",t:"Event Registered",tag:"SUP-M1"},
+ {id:"in",c:5,r:2,k:"page",t:"Welcome + named contact"},
+ {id:"cf",c:6,r:0,k:"page",t:"Confirmation, calendar invite, reminder"},
+ {id:"fu",c:7,r:1,k:"page",t:"Follow-up: next dates, newsletter, pledge"}
+],edges:[["en","gi"],["gi","ev"],["gi","vr"],["ev","ed"],["vr","vf"],["ed","rf"],["vf","vc"],["rf","ec"],["vc","in"],["ec","cf"],["cf","fu"],["in","fu"]]},
+track:[["Events page viewed","SUP-m1","events_view"],["Event detail viewed","","event_detail_view"],["Registration started","","event_register_start"],["Event registered","SUP-M1","event_registered (event, type)"],["Volunteer roles viewed","","volunteer_page_view"],["Skills offered","SUP-m2","volunteer_form_start"],["Volunteer registered","SUP-M2","volunteer_registered (role, skills, location)"]]
+},
+
+follower:{name:"Follower",desc:"Signs up to the newsletter and follows TRC on social media. Main goal: Newsletter Subscribed (FOL-M1).",
+current:[
+ [["Arrives from a Google search, an event, the Facebook page, or the one YouTube video","Lands on whichever page Google or the link sends them to"],["Google search","Event (in person)","~Facebook page","~YouTube video","Any indexed page"],"Interesting. Who are these people?",0,[["FOL-m1","partial"]],
+  ["The only YouTube video is the Bearscombe Farm appeal. Bearscombe is the Devon property, which is no longer viable, and the Devon page never uses the name","The site's Facebook link uses an old page ID that redirects","Facebook lists events (e.g. Avon Valley field trip, 18 Oct) that the Events page doesn't"],["Make sure every landing page explains TRC and offers sign-up"]],
+ [["Tries to judge whether TRC is real, active and working","Reads the home page, About pages, team and property pages","Looks for news or recent progress"],["Home page","The Rewilding Collective","The Team","Birdhope","Devon","Events"],"Is this actually happening? What have they achieved so far?",-1,[],
+  ["Both featured properties, Bearscombe (Devon) and Birdhope (Northumberland), are no longer viable but are still promoted as live opportunities in the home page banner, the Our Work menu and their own pages","No news or updates in the navigation","Stale content: 'As of September 2024', and 'May 13th' as the next drop-in","Inconsistent details: Devon page describes 25 acres, Properties says >100 acres, and the Devon search listing mentions 'Broomborough House'","Regenerative Agriculture page is 'Under construction'","Unfinished policies: the Privacy Policy, Terms and Cookie Policy have placeholder text instead of the registered address and registration number, and the Legal and Financial Framework page is lorem ipsum","A 'Properties under consideration' page (/properties) is reachable only from the footer. Its purpose is unclear even to the team, and its criteria (South Devon, >100 acres) may be out of date","No evidence of progress: no follower numbers, pledges raised or events held"],["Complete every policy and legal page","Move Bearscombe and Birdhope to a /previous-prospects page, with why each didn't go ahead","Replace /properties with a /current-prospects page","News page in the main nav","Keep dates and figures current and consistent","Show progress and social proof"]],
+ [["Decides to stay in touch","Clicks 'News & updates please' (home), 'Join newsletter' (Birdhope) or the button on the unlinked /newsletter page","Or uses the email field on the Properties page (footer link only)"],["Home page","Birdhope","/newsletter page","Properties page (footer)"],"Fine, I'll get their updates.",0,[],
+  ["Every newsletter button leaves the site for a Google Form","The Devon page has no newsletter option","The Properties page has a separate email field. Those sign-ups go to GoDaddy's Conversations inbox, which appears unmonitored, so they never reach Mailchimp, the welcome email or the newsletter"],["One on-site sign-up block on every page, connected to Mailchimp","Until then, remove the Properties page field or point it at the newsletter form"]],
+ [["Fills in the 'Newsletter and contact form' on Google Forms","Sees 'Your response has been recorded.' and is stuck on Google","Receives the Mailchimp welcome email straight away"],["~Google Form","~Google confirmation","Welcome email"],"Why all these questions? And now how do I get back to the site?",-2,[["FOL-M1","partial"]],
+  ["Six required questions, including a free-text one, a long county list and a required project area (see 'Form friction')","Confirmation is a dead end: the only link is 'Submit another response'","The welcome email is long and written for would-be shareholders, not followers; its involvement checklist can't be answered (see 'Welcome email')"],["Ask for email only; collect everything else later and optionally","Send people back to a thank-you page on the site","A welcome email written for new followers"]],
+ [["Receives only occasional emails","Follows on Facebook, which is more active than the site","May find the Discord via the Devon page"],["Newsletter (occasional)","~Facebook","~Discord"],"I haven't heard from them in a while. Is anything happening?",-1,[["FOL-m2","partial"]],
+  ["Emails are occasional, with no regular schedule, so followers lose touch and interest fades","The progress shared by email (>600 subscribers, ~3,000 on social, 45 people in the Northumberland group, monthly Devon field trips) isn't on the website","Discord is only linked from the Devon page","No clear route from follower to supporter, donor or pledger"],["A regular, predictable newsletter (e.g. monthly)","Put the email's progress figures on the website","Every newsletter ends with one next step: an event, a donation or a pledge"]]
+],
+notes:[
+ {title:"Where a follower can land",items:[
+  "<b>From Google:</b> any page in the sitemap. Main pages: Home, The Rewilding Collective, How Rewilding Works, The Team, Devon, Birdhope, Regenerative Agriculture, Events, Donations, Properties.",
+  "<b>Indexed but not in the navigation:</b> /how, /contact-us (only says 'Please head here to make contact'), /newsletter, /donation-success.",
+  "<b>From Facebook:</b> the page 'The Rewilding Collective' (2.9K followers) links to rewildingcollective.org, so most likely the home page. Address: facebook.com/people/The-Rewilding-Collective/61563458254727",
+  "<b>From YouTube:</b> one video, 'Bearscombe Farm Appeal 1' (4:57), for the Devon property that is no longer viable. Not checked whether it links to the site.",
+  "<b>From an event:</b> people would type the address or search the name, so most likely the home page."]},
+ {title:"Form friction: 'Rewilding Collective Newsletter and contact form'",items:[
+  "<b>One form for two jobs.</b> The title says newsletter <i>and</i> contact, and the home page uses it for both 'Get in touch' and 'News & updates please'.",
+  "<b>Six required questions</b> for a newsletter: email, first name, surname, a free-text question, county, and project area.",
+  "<b>Required free-text question:</b> 'Help us understand your interest please - how can we support you and vice versa?' This is hard to answer if you only want updates.",
+  "<b>County dropdown:</b> about 100 mostly historic counties in one long list. No Greater Manchester, Merseyside, West Midlands, Tyne and Wear or South Yorkshire, and no option for outside the UK. The wording 'In which County… do you live in' repeats 'in'.",
+  "<b>Required project area</b> with only three options (South Devon, My county, Birdhope Northumberland). This feels like a commitment for someone just following.",
+  "<b>'How did you hear about us?'</b> lists Bluesky, Instagram and LinkedIn, none of which are linked from the site.",
+  "<b>No privacy or consent wording,</b> and nothing on what they'll receive or how often.",
+  "<b>Trust cues:</b> a 'Sign in to Google to save your progress' prompt, and the footer reads 'This form was created inside OceansWatch'. OceansWatch is the charity Chris founded (The Team page), but visitors won't know that, so it looks like a different organisation.",
+  "<b>After submitting,</b> the user sees 'Your response has been recorded.' on Google Forms. The only link is 'Submit another response', so there's no route back to the website."]},
+ {title:"Welcome email (Mailchimp, sent on sign-up)",items:[
+  "<b>Sent immediately.</b> Google Form sign-ups sync to Mailchimp automatically (this used to be manual), and the welcome email goes out as soon as the details arrive.",
+  "<b>What it covers:</b> how the model works (suitable land, funding the purchase, your investment, the plan for your land), working as a group, visiting, staying and living on the land, public access, the Section 103 covenant, the directors, Our Promise, 'What involvement appeals to you?', and contact details.",
+  "<b>What works:</b> it answers most questions a would-be shareholder has. The share figure ('about one acre… around £10,000 per share') matches The Rewilding Collective page. It is honest about risk ('future land value cannot be gauged'), and it names four directors (Ashleigh Brown, Chris Bone, Leilani Van Koten, Nick Davy), a legal advisor (Mothiur Rahman, New Economy Law) and financial advisors (Third Sector Accountancy).",
+  "<b>Written for investors, not followers.</b> Almost all of it is about becoming a shareholder. A new follower isn't told what newsletters they'll get, how often, or how to take part without investing.",
+  "<b>Long for a first email.</b> It reads like the whole of The Rewilding Collective page.",
+  "<b>Contradicts the website:</b> it says TRC 'is forming as a Charitable Community Benefit Society'; the website says it is one.",
+  "<b>Doesn't match The Team page:</b> the email names Nick Davy as a director and Third Sector Accountancy as financial advisors, neither of which is on the website. The website lists Tom Amey as a trustee, who isn't in the email. The legal advisor is 'Rahman' in the email and 'Rahmen' on the website.",
+  "<b>'What involvement appeals to you?' can't be answered.</b> The ❏ boxes are text characters, not links, and there's no reply button, so the answers (invest in Devon, invest elsewhere, donate, help with tasks, offer land) are never captured.",
+  "<b>Out-of-date option:</b> 'Shareholder at your first Devon HQ site', though there's no viable Devon site.",
+  "<b>Time-limited contact details:</b> 'Sept and Oct ~ 07375 571433' and 'From Nov WhatsApp +64 27 6212214', with no year. Facebook gives a different number (07833 034747), so there are now three numbers across channels.",
+  "<b>One generic call to action:</b> 'Visit our website', which goes to the home page."]},
+ {title:"A recent newsletter ('Welcome to recent members')",items:[
+  "<b>What works:</b> a warm, personal sign-off from Chris and Leilani, and real progress: >600 newsletter readers, ~3,000 on social media, an active Devon group meeting monthly, and a group of 45 around Northumberland with pledges.",
+  "<b>Calls everyone 'members'</b> and says 'you (through your shareholding) get to own the land', though most readers have no shareholding.",
+  "<b>Says '3 important documents' are attached,</b> but they are links to a 'public access google drive' plus three download buttons.",
+  "<b>Contradicts the website:</b> Devon is a '~25 acre block… towards our 100 acre target', and the monthly field trips aren't on the Events page.",
+  "<b>Promotes Birdhope Farm,</b> which is no longer viable.",
+  "<b>No next step</b> except downloads: no link to events, Facebook, donating, pledging or the Discord."]}
+],
+ideal:[
+ [["Finds TRC via Google, an event, Facebook or YouTube","Lands on a page that explains TRC and offers sign-up"],["Google search","Event QR code","Facebook","YouTube"],"This looks interesting. Who are they?",1,[["FOL-m1","target"]],
+  null,["Social links in header and footer","QR code at events that goes to the sign-up"]],
+ [["Reads what TRC does and sees recent progress","Checks the team, projects and news"],["News page","About","The Team","Current prospects","Previous prospects","Facebook"],"They're active and getting somewhere.",1,[],
+  null,["/previous-prospects page for Bearscombe and Birdhope, explaining why each didn't go ahead. This shows careful due diligence rather than failure","/current-prospects page saying what TRC is looking for now, and that there's no live property yet. It replaces /properties, which redirects to it","Our Work menu links to Current prospects and Previous prospects","News page in the main nav, with past newsletters","Current dates and consistent figures","All policies complete, with registration number and registered address","Progress figures already used in newsletters (>600 subscribers, ~3,000 on social, 45 in the Northumberland group) shown on the site"]],
+ [["Enters an email in the sign-up block on the page"],["On-site sign-up block"],"One field, done.",2,[["FOL-M1","target"]],
+  null,["Email-only sign-up (first name optional), separate from the contact form","States what they'll get and how often, with a privacy line"]],
+ [["Lands on a thank-you page on the site","Confirms by email and gets a welcome email straight away","Can tell TRC their region and interests if they want to"],["Thank-you page","Confirmation email","Welcome email","Preferences page"],"Welcomed straight away, and asked what I want afterwards, not before.",2,[["FOL-m2","target"]],
+  null,["Thank-you page on the site with next steps (events, Facebook, News)","Automated welcome email sent on sign-up, written for followers, with correct links","County, interests and 'how did you hear' moved to an optional step after sign-up","Invitation to the Discord community"]],
+ [["Gets regular updates matched to interests","Moves into the donor, pledger or supporter journey"],["Newsletter","Facebook","Discord"],"I'm ready to do more.",2,[["DON-M1","cross"],["PLG-M1","cross"],["SUP-M1","cross"]],
+  null,["Newsletter on a regular schedule that matches the promise made at sign-up","Segmented newsletter content and calls to action"]]
+],
+flow:{nodes:[
+ {id:"gs",c:0,r:0,k:"entry",t:"Google search"},
+ {id:"ev",c:0,r:1,k:"entry",t:"Event (drop-in, field trip)"},
+ {id:"fb",c:0,r:2,k:"offsite",t:"Facebook page (2.9K followers)",tag:"FOL-m1"},
+ {id:"yt",c:0,r:3,k:"offsite",t:"YouTube: one Bearscombe video"},
+ {id:"lp",c:1,r:0,k:"page",t:"Any indexed page"},
+ {id:"hm",c:1,r:2,k:"page",t:"Home page"},
+ {id:"q1",c:2,r:1,k:"decision",t:"Active and credible?"},
+ {id:"lv",c:3,r:0,k:"drop",t:"Leaves: stale dates, non-viable properties"},
+ {id:"ct",c:3,r:1,k:"page",t:"'News & updates' / 'Join newsletter' / /newsletter"},
+ {id:"pp",c:3,r:2,k:"page",t:"Properties page email field (footer link)"},
+ {id:"gf",c:4,r:1,k:"offsite",t:"Google 'Newsletter and contact form'"},
+ {id:"q2",c:5,r:1,k:"decision",t:"6 required fields: finish?"},
+ {id:"ab",c:6,r:0,k:"drop",t:"Abandons form"},
+ {id:"cv",c:6,r:1,k:"macro",t:"Newsletter Subscribed",tag:"FOL-M1"},
+ {id:"nw",c:7,r:0,k:"drop",t:"Dead end: only 'Submit another response'"},
+ {id:"we",c:7,r:2,k:"page",t:"Mailchimp sends welcome email immediately"},
+ {id:"gd",c:4,r:3,k:"drop",t:"GoDaddy inbox, unmonitored: never added to newsletter"}
+],edges:[["cv","we","later"],["gs","lp"],["ev","hm","types address"],["fb","hm","","off"],["yt","hm","if clicked","off"],["lp","q1"],["hm","q1"],["q1","lv","No","pain"],["q1","ct","Yes"],["q1","pp","footer"],["ct","gf","","off"],["gf","q2","","off"],["q2","ab","No","pain"],["q2","cv","Yes: auto-syncs to Mailchimp"],["pp","gd","Sign up","pain"],["cv","nw","","pain"]]},
+idealFlow:{nodes:[
+ {id:"gs",c:0,r:0,k:"entry",t:"Google search"},
+ {id:"ev",c:0,r:1,k:"entry",t:"Event: QR code"},
+ {id:"fb",c:0,r:2,k:"entry",t:"Facebook"},
+ {id:"yt",c:0,r:3,k:"entry",t:"YouTube"},
+ {id:"lp",c:1,r:0,k:"page",t:"Landing page with clear purpose"},
+ {id:"so",c:1,r:3,k:"micro",t:"Follows on social",tag:"FOL-m1"},
+ {id:"nw",c:2,r:0,k:"page",t:"News page: progress, past issues"},
+ {id:"fm",c:3,r:1,k:"form",t:"Sign-up block: email only"},
+ {id:"cv",c:4,r:1,k:"macro",t:"Newsletter Subscribed (double opt-in)",tag:"FOL-M1"},
+ {id:"wl",c:5,r:1,k:"page",t:"Site thank-you page + instant welcome email"},
+ {id:"dc",c:5,r:3,k:"micro",t:"Joins Discord community",tag:"FOL-m2"},
+ {id:"q",c:6,r:1,k:"decision",t:"Main interest?"},
+ {id:"d",c:7,r:0,k:"page",t:"Donor journey",tag:"DON-M1",cross:1},
+ {id:"p",c:7,r:1,k:"page",t:"Pledger journey",tag:"PLG-M1",cross:1},
+ {id:"s",c:7,r:2,k:"page",t:"Supporter journey",tag:"SUP-M1",cross:1}
+],edges:[["gs","lp"],["fb","lp"],["yt","lp"],["fb","so"],["lp","nw"],["nw","fm"],["lp","fm"],["ev","fm","scan"],["fm","cv"],["cv","wl"],["wl","dc"],["wl","q"],["q","d","Donate"],["q","p","Pledge"],["q","s","Volunteer"]]},
+track:[["Landing page viewed","","page_view (source, landing page)"],["News page viewed","","news_view"],["Sign-up started","","signup_start (page)"],["Sign-up submitted","","signup_submitted (page, source)"],["Subscription confirmed","FOL-M1","newsletter_confirmed"],["Preferences added","","preferences_saved (region, interests)"],["Also: social link clicked","FOL-m1","social_click (network)"],["Also: Discord joined","FOL-m2","discord_join_click"]]
+}
+};
+
+/* Action list. Each item: [action, detail, type, when, journeys, completedDate?]. when: decide | now | new */
+const ACTIONS=[
+ {s:"1. Team decisions and information",n:"Most other actions depend on these. They are decisions or facts only the team can supply.",items:[
+  ["Decide what donations are for","General support, property acquisition costs (3–8% of property value), or both, and what they fund while there's no live property.","Decision","decide",["donor"]],
+  ["Gather the transparency facts","What happened with Bearscombe and Birdhope and why; how many pledgers there are and how much is pledged; how much has been donated, how it's held and what it has been spent on.","Decision","decide",["all"]],
+  ["Agree one share offer","Price per share, whether a share is about one acre, what the extra £1,000 covers, and the minimum and maximum holding.","Decision","decide",["pledger"]],
+  ["Confirm the legal details","Registration number, registered office address, whether TRC is registered or 'forming', and HMRC recognition for Gift Aid.","Decision","decide",["all"]],
+  ["Agree the list of directors, trustees and advisors","The website and welcome email differ (Nick Davy, Tom Amey, Third Sector Accountancy, 'Rahman' or 'Rahmen').","Decision","decide",["donor","pledger"]],
+  ["Define the volunteer roles open now","What each role involves, who it's for, where, how much time, and which roles exist before there's any land.","Decision","decide",["supporter"]],
+  ["Decide who checks each inbox","GoDaddy Conversations, info@, Facebook messages and Discord, with an agreed reply time.","Process","decide",["all"]],
+  ["Set a newsletter rhythm and owner","For example monthly, with one named person responsible.","Process","decide",["follower"]]]},
+ {s:"2. Website platform and tools",n:"Disconnected tools are losing users at every hand-off. A platform with built-in forms and payments would join the journeys up.",items:[
+  ["Move to a website builder with forms and payments","Squarespace is lower maintenance for a small team; WordPress is more flexible but needs someone to keep it updated and secure. Compare current pricing and the features below before choosing.","Platform","new",["all"]],
+  ["Use one donation checkout that handles Gift Aid","Amount, monthly giving, Gift Aid declaration and newsletter opt-in in a single step, either built into the new platform or through a UK charity donation tool embedded on the site.","Platform","new",["donor"]],
+  ["Connect every form to Mailchimp","Newsletter, co-ownership interest, volunteer and donation forms, each tagged so the right emails follow.","Platform","new",["all"]],
+  ["Add event booking that doesn't need Facebook","Through the new platform or a booking tool, with automatic confirmations and reminders.","Platform","new",["supporter"]],
+  ["Set up analytics and conversion tracking","Track the funnel steps listed under each ideal journey map.","Platform","new",["all"]],
+  ["Redirect old addresses when moving","For example /devon, /birdhope-northumberland and /properties. Unused pages (/test, /stuff, the blog) can be left behind, which also cleans up the sitemap.","Platform","new",["all"]]]},
+ {s:"3. Transparency and trust",n:"Every journey stalls at Consideration because people can't see what TRC has done or how money is used.",items:[
+  ["Add a News or Progress page to the main menu","What TRC has done, is doing now and plans next, updated regularly.","Page","now",["all"]],
+  ["Create a Previous Prospects page","One summary page with a short entry for each property (Bearscombe and Birdhope): what it was, why TRC was interested, why it didn't go ahead and what was learned. Each entry links to the property's own page, which gains an outcome section at the top.","Page","now",["all"]],
+  ["Fill in the outcome sections on Bearscombe and Birdhope","Replace the lorem ipsum under 'Why we were interested', 'Why it didn't go ahead' and 'What we learned' with the team's account. Hide these sections until the text is ready.","Copy","decide",["all"]],
+  ["Rewrite the old sales copy on Bearscombe and Birdhope","Past tense ('What we proposed') or remove: 'We have found a great new property…', the shares and Discord text, 'A rare opportunity' headings, and Birdhope's 'View more details' link to itself.","Copy","decide",["all"]],
+  ["Update titles, descriptions and headings on the prospect pages","Current properties, Previous Prospects, Bearscombe and Birdhope. Remove 'Broomborough House' from the Bearscombe description.","Copy","now",["all"],"16 Oct 2026"],
+  ["Add breadcrumb schema to Bearscombe and Birdhope","Through an HTML block on each page, then test with Google's Rich Results Test.","Page","now",["all"],"16 Oct 2026"],
+  ["Replace /properties with a Current prospects page","Say there's no live property yet, and what TRC is looking for.","Page","now",["follower","pledger"],"16 Oct 2026"],
+  ["Publish 'Where your donations go'","Donations received, held and spent, updated at least yearly.","Copy","now",["donor"]],
+  ["Add a status panel","Pledgers, amount pledged and groups forming, replacing '£350,000… as of September 2024'.","Copy","now",["pledger","follower"]],
+  ["Show the progress figures from newsletters on the website",">600 subscribers, ~3,000 on social media, 45 people in the Northumberland group.","Copy","now",["follower","donor"]],
+  ["Complete every policy","Privacy Policy, Terms and Cookie Policy now show the registered address and registration number.","Copy","now",["all"],"16 Oct 2026"],
+  ["Write or unpublish the Legal and Financial Framework page","It is still lorem ipsum. It isn't in the menu, but /how mentions legal and financial toolkits.","Copy","decide",["pledger"]],
+  ["Rebuild the Contact page and add it to the menu","Email, one monitored phone number, a reply time, who to contact about what, and links to the newsletter, donations and Facebook. Point the home page 'Get in touch' button here instead of the newsletter form.","Page","now",["all"],"16 Oct 2026"],
+  ["Add ContactPage schema to the Contact page","Added through an HTML block, using the same organisation ID as the home page schema. Code checked and valid; confirm with Google's Rich Results Test.","Page","now",["all"],"16 Oct 2026"],
+  ["Put the registration number and registered address in the footer","Footer now shows the registration number (9600) and registered address on every page, with a Donations link beside Contact Us.","Copy","now",["donor","pledger"],"16 Oct 2026"],
+  ["Make The Team page and the welcome email match","Same directors, trustees and advisors, including the financial advisors.","Copy","now",["donor","pledger"]]]},
+ {s:"4. Quick fixes on the current website",n:"Small changes that can be made on GoDaddy now, before any move.",items:[
+  ["Take Bearscombe and Birdhope off the home page and menu","Birdhope banners removed from the home page, The Rewilding Collective page and The Team page, and both pages moved under Previous Prospects in the menu.","Button/link","now",["all"],"16 Oct 2026"],
+  ["Bring the Events page up to date","Replace 'May 13th', fix 'Or next meeting', and list the Facebook events.","Copy","now",["supporter"]],
+  ["Deal with the Properties page email field","Remove it or link to the newsletter form, then check the GoDaddy Conversations inbox and move any sign-ups into Mailchimp.","Form","now",["follower"],"16 Oct 2026"],
+  ["Simplify the newsletter form","Email required, name optional; move county, project area and the free-text question to later; keep the contact form separate.","Form","now",["follower"]],
+  ["Fix the donation form","Make Address Line 2 optional, make the Gift Aid tax question a single choice, drop the county question, and label the Stripe link clearly.","Form","now",["donor"]],
+  ["Update the footer Facebook link","Point it at the current page address.","Button/link","now",["follower","supporter"]],
+  ["Hide or finish the Regenerative Agriculture page","It currently says 'Under construction'.","Page","now",["all"]]]},
+ {s:"5. Follower journey",n:"",items:[
+  ["Move the newsletter button to the top of the home page","'Hear about new land first' section now sits directly under the introduction, and the duplicate card has been removed.","Button/link","now",["follower"],"16 Oct 2026"],
+  ["One email-only sign-up block on every page","Say what people get and how often, with a privacy line.","Form","new",["follower"]],
+  ["Thank-you page on the website after sign-up","With next steps: events, Facebook, News.","Page","new",["follower"]],
+  ["Rewrite the welcome email for followers","Short: who TRC is, what to expect, and next steps. Move the investor detail to a separate pledger welcome email.","Email","now",["follower"]],
+  ["Fix the welcome email's details","Undated contact numbers; clickable involvement options that link to forms; remove 'first Devon HQ site'; correct 'forming as'.","Email","now",["follower","pledger"]],
+  ["Ask for preferences after sign-up","Region and interests, as an optional step using Mailchimp groups.","Email","new",["follower"]],
+  ["Add social links to the header","As well as the footer.","Button/link","now",["follower"]],
+  ["Send a regular newsletter with one next step","Each issue ends with an event, a donation ask or a pledge invitation, and lists upcoming events.","Email","now",["follower","supporter"]]]},
+ {s:"6. Supporter journey",n:"",items:[
+  ["Add 'Get involved' to the main menu","Covering Events and Volunteering.","Page","now",["supporter"]],
+  ["Keep the Events page in step with Facebook","Every event with date, place and type.","Copy","now",["supporter"]],
+  ["Write a Volunteering page","The roles agreed by the team, who they're for, time needed and location.","Page","now",["supporter"]],
+  ["Add a volunteer form","Role and skills, going to one monitored inbox and tagged in Mailchimp, followed by a welcome with a named contact.","Form","new",["supporter"]],
+  ["Follow up after each event","Photos, the next dates and a newsletter sign-up.","Email","new",["supporter"]]]},
+ {s:"7. Donor journey",n:"",items:[
+  ["Say what donations fund wherever donations are asked for","One short line. The home page uses an interim line ('Donations help us find land and build the community that will rewild it'); confirm or replace it once the team decides what donations are for.","Copy","decide",["donor"]],
+  ["Restructure the Donations page","Lead with what donations fund now, then where donations have gone, then trust details (registration, team), then the FAQ.","Page","now",["donor"]],
+  ["Offer suggested amounts and monthly giving","In the single checkout.","Form","new",["donor"]],
+  ["Send a proper thank-you","A receipt or thank-you email with Gift Aid status and what the gift funds.","Email","new",["donor"]],
+  ["Follow up forms submitted without payment","Until the single checkout is in place, check for donation forms with no matching Stripe payment.","Process","now",["donor"]],
+  ["Send donors a yearly impact update","What donations achieved, and an invitation to events or to pledge.","Email","new",["donor"]]]},
+ {s:"8. Pledger journey",n:"",items:[
+  ["Lead the home page with the co-ownership model","And the current status, rather than a single property.","Copy","now",["pledger"]],
+  ["Create one 'How community shares work' page","Combine The Rewilding Collective page and /how: one share statement, Our Promise, safeguards and risks together.","Page","now",["pledger"]],
+  ["Rename How Rewilding Works to 'Documents'","With a line on what each document is and which to read first.","Page","now",["pledger"]],
+  ["Finalise the Share Prospectus","Replace the October 2025 draft and add a plain-English summary on the site.","Copy","now",["pledger"]],
+  ["Add a co-ownership interest form","Separate from the newsletter, so pledging interest can be seen and measured (PLG-m5).","Form","new",["pledger"]],
+  ["Offer a phone or video call as the first conversation","A booking link with Leilani, instead of starting in Discord.","Process","new",["pledger"]],
+  ["Move the pledger form onto the website","With on-screen and email confirmation, then written confirmation of the pledge and its terms.","Form","new",["pledger"]],
+  ["Make Discord optional","Offer it after onboarding, with a simple how-to guide and an explanation of the real-name request.","Process","now",["pledger"]],
+  ["Write a pledger welcome email","Separate from the follower welcome, with current contact details.","Email","now",["pledger"]],
+  ["Send pledgers regular updates by email","Including when a prospect falls through and why.","Email","now",["pledger"]],
+  ["Plan an online share application","Ready for when a share offer opens.","Form","new",["pledger"]]]}
+];
+const FIXES=[["Both featured properties, Bearscombe (Devon) and Birdhope (Northumberland), are no longer viable but are still promoted", "fixed"], ["Unfinished policies: the Privacy Policy, Terms and Cookie Policy have placeholder text", "partly"], ["A 'Properties under consideration' page (/properties) is reachable only from the footer", "fixed"], ["The Properties page has a separate email field", "fixed"], ["Complete every policy and legal page", "partly"], ["Move Bearscombe and Birdhope to a /previous-prospects page", "fixed"], ["Replace /properties with a /current-prospects page", "fixed"], ["Until then, remove the Properties page field", "fixed"], ["/contact-us (only says 'Please head here to make contact')", "fixed"], ["Both featured properties (Bearscombe and Birdhope) are no longer viable but still appear live", "fixed"], ["Unfinished policies and legal pages: the Privacy Policy, Terms and Cookie Policy all have placeholder text", "partly"], ["Explain Bearscombe and Birdhope on a Previous prospects page", "partly"], ["The home page banner promotes Birdhope, which is no longer viable", "fixed"], ["No live property, but Bearscombe (Devon) and Birdhope are still shown as current opportunities", "fixed"], ["Policies still have placeholder registration number and address", "fixed"], ["<b>Privacy Policy</b> (/privacy-policy-1)", "fixed"], ["<b>Terms and Conditions</b> (last updated July 2026)", "fixed"], ["<b>Cookie Policy</b> (last updated July 2026)", "fixed"], ["<b>Also missing:</b> no registration number anywhere else on the site", "partly"], ["<b>Accountability:</b> no registration number", "partly"], ["Say plainly that there's no live property yet, and how to register interest", "partly"], ["Lead with the co-ownership model rather than a single property", "partly"], ["No appeal, target or named purpose, and no live property to fund", "partly"], ["Say what donations fund wherever the Donate button appears", "partly"], ["<b>Naming (minor):</b>", "fixed"], ["Pledging interest arrives mixed in with newsletter sign-ups and general contact", "partly"], ["No volunteer form; interest goes through Discord, email or the general newsletter form", "partly"], ["Nothing tells a volunteer what happens after they get in touch", "partly"]];
+const FXLBL={fixed:"Fixed 16 Oct",partly:"Partly fixed 16 Oct"};
+function fx(x,raw){const f=FIXES.find(([a])=>x.includes(a));const body=raw?x:esc(x);return f?`<li class="fx fx-${f[1]}">${body} <span class="fxtag">${FXLBL[f[1]]}</span></li>`:`<li>${body}</li>`}
+const WHEN={decide:"Team decision",now:"Can start now",new:"With new website"};
+const JNAME={all:"Whole site",follower:"Follower",supporter:"Supporter",donor:"Donor",pledger:"Pledger"};
+let af="all";
+function actionsView(){
+ const show=j=>af==="all"||j.includes(af)||j.includes("all");
+ let n=0;const total=ACTIONS.reduce((a,g)=>a+g.items.length,0),done=ACTIONS.reduce((a,g)=>a+g.items.filter(i=>i[5]).length,0);
+ const filt=`<div class="seg" role="group" aria-label="Show actions for">${["all","follower","supporter","donor","pledger"].map(k=>`<button type="button" data-af="${k}" aria-pressed="${af===k}">${k==="all"?"All actions":JNAME[k]}</button>`).join("")}</div>`;
+ const groups=ACTIONS.map(g=>{const rows=g.items.filter(i=>show(i[4]));if(!rows.length)return"";
+  return `<section class="agroup"><h3>${esc(g.s)}</h3>${g.n?`<p>${esc(g.n)}</p>`:""}<ol class="alist">${rows.map(i=>{n++;return `<li class="aitem${i[5]?" done":""}"><div class="atext"><b>${i[5]?`<span class="tick" aria-hidden="true">✓</span>`:""}${esc(i[0])}${i[5]?`<span class="sr"> (completed)</span>`:""}</b><span>${esc(i[1])}</span></div><div class="ameta">${i[5]?`<span class="atag completed">Completed ${esc(i[5])}</span>`:`<span class="atag when-${i[3]}">${WHEN[i[3]]}</span>`}<span class="atag">${esc(i[2])}</span>${i[4].map(j=>`<span class="atag j">${JNAME[j]}</span>`).join("")}</div></li>`}).join("")}</ol></section>`}).join("");
+ return `<div class="sect"><p>One list of actions drawn from all four journeys. Start with the team decisions, because most other actions depend on them. Tags show when each action can happen, what kind of change it is, and which journeys it affects.</p><div class="afilter">${filt}<span class="acount">Showing ${n} of ${total} actions · ${done} completed</span><div class="aprog" role="img" aria-label="${done} of ${total} actions completed"><i style="width:${(done/total*100).toFixed(1)}%"></i></div></div>${groups}</div>`;
+}
+
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ORDER=["follower","supporter","donor","pledger","actions"];
+U.actions={name:"Action list",desc:"Everything the journeys point to, in one list: team decisions first, then the website platform, transparency, quick fixes, and changes for each journey."};
+let state={u:"follower",v:"current"};
+try{const h=location.hash.slice(1).split("-");if(U[h[0]]||h[0]==="actions")state.u=h[0];if(["current","flow","ideal"].includes(h[1]))state.v=h[1];}catch(e){}
+
+function chip(id,st){const [n,t]=CONV[id];const cls=st==="cross"?"cross":t;
+ return `<div class="chip ${cls}"><span class="id">${id}</span><span>${esc(n)}<span class="st ${st}">${STATUS[st]}</span></span></div>`}
+
+function emo(vals){
+ const W=1000,H=120,pad=14,cw=W/5,y=v=>H/2-v*(H/2-pad)/2;
+ const pts=vals.map((v,i)=>[cw*i+cw/2,y(v)]);
+ let g="";[2,1,0,-1,-2].forEach(v=>{g+=`<line class="${v?'emo-grid':'emo-zero'}" x1="0" x2="${W}" y1="${y(v)}" y2="${y(v)}" vector-effect="non-scaling-stroke"/>`});
+ let d="M"+pts.map(p=>p.join(",")).join(" L");
+ const lbl={2:"Delighted",0:"Neutral","-2":"Frustrated"};
+ return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="How the user feels at each stage: ${vals.map((v,i)=>STAGES[i]+', '+FEEL[v]).join('; ')}">${g}<path class="emo-line" d="${d}" vector-effect="non-scaling-stroke"/></svg>`+
+ `<div style="position:relative;height:0">${pts.map((p,i)=>`<span aria-hidden="true" style="position:absolute;left:${p[0]/10}%;top:${-H+p[1]}px;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--ink)"></span>`).join("")}${[2,0,-2].map(v=>`<span class="emo-lbl" style="position:absolute;left:6px;top:${-H+y(v)-14}px;font:500 11px var(--f-mono);color:var(--muted)" aria-hidden="true">${lbl[v]}</span>`).join("")}</div>`;
+}
+
+function map(stages,ideal,label){
+ const rows=[
+  ["Doing",s=>`<ul>${s[0].map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`],
+  ["Touchpoints",s=>s[1].length?s[1].map(x=>x[0]==="~"?`<span class="tp off"><span aria-hidden="true">↗ </span>${esc(x.slice(1))}<span class="sr"> (leaves the website)</span></span>`:`<span class="tp">${esc(x)}</span>`).join(""):`<span class="none">None</span>`],
+  ["Thinking",s=>`<span class="think">“${esc(s[2])}”</span>`],
+  ["Feeling",null],
+  ["Conversions",s=>s[4].length?`<div class="chips">${s[4].map(c=>chip(c[0],c[1])).join("")}</div>`:`<span class="none">—</span>`],
+ ];
+ if(!ideal)rows.push(["Pain points",s=>`<ul>${s[5].map(x=>fx(x)).join("")}</ul>`,"row-pain"]);
+ rows.push([ideal?"What changes":"Opportunities",s=>`<ul>${s[6].map(x=>ideal?`<li>${esc(x)}</li>`:fx(x)).join("")}</ul>`,"row-opp"]);
+ let h=`<div class="rl" style="background:var(--bg)">Stage</div>`+STAGES.map((st,i)=>`<div class="sh"><small>${i+1} of 5</small>${st}</div>`).join("");
+ rows.forEach(([lab,fn,cls],ri)=>{const last=ri===rows.length-1?" last":"";
+  h+=`<div class="rl${last}">${lab}</div>`;
+  if(!fn){h+=`<div class="emo">${emo(stages.map(s=>s[3]))}</div>`;return}
+  h+=stages.map(s=>`<div class="${cls||""}${last}">${fn(s)}</div>`).join("");
+ });
+ return `<div class="scroll" role="region" tabindex="0" aria-label="${esc(label)}. Scroll sideways to see all five stages."><div class="map">${h}</div></div>`;
+}
+
+function wrapText(t,max){const w=t.split(" ");const L=[];let c="";w.forEach(x=>{if((c+" "+x).trim().length>max&&c){L.push(c);c=x}else c=(c+" "+x).trim()});if(c)L.push(c);return L}
+
+function flow(f,label){
+ const CW=196,RH=124,NW=164,NH=66,PX=16,PY=30;
+ const N={};f.nodes.forEach(n=>{n.x=PX+n.c*CW;n.y=PY+n.r*RH;N[n.id]=n});
+ const maxC=Math.max(...f.nodes.map(n=>n.c)),maxR=Math.max(...f.nodes.map(n=>n.r));
+ const W=PX*2+maxC*CW+NW,H=PY+maxR*RH+NH+24;
+ let edges="",labels="";
+ f.edges.forEach(([a,b,l,st])=>{const s=N[a],t=N[b];let p0,p1,p2,p3;
+  if(t.c>s.c){p0=[s.x+NW,s.y+NH/2];p3=[t.x-4,t.y+NH/2];const dx=(p3[0]-p0[0])/2;p1=[p0[0]+dx,p0[1]];p2=[p3[0]-dx,p3[1]]}
+  else if(t.r>s.r){p0=[s.x+NW/2,s.y+NH];p3=[t.x+NW/2,t.y-4];p1=[p0[0],p0[1]+30];p2=[p3[0],p3[1]-30]}
+  else {p0=[s.x+NW/2,s.y];p3=[t.x+NW/2,t.y+NH+4];p1=[p0[0],p0[1]-30];p2=[p3[0],p3[1]+30]}
+  const cls=st||"",mk=st==="pain"?"ah-pain":st==="off"?"ah-off":"ah";
+  edges+=`<path class="e ${cls}" d="M${p0} C${p1} ${p2} ${p3}" marker-end="url(#${mk})"/>`;
+  if(l){const mx=(p0[0]+3*p1[0]+3*p2[0]+p3[0])/8,my=(p0[1]+3*p1[1]+3*p2[1]+p3[1])/8;const w=l.length*5.9+10;
+   labels+=`<g class="e-lbl"><rect x="${mx-w/2}" y="${my-9}" width="${w}" height="17" rx="3"/><text x="${mx}" y="${my+4}" text-anchor="middle">${esc(l)}</text></g>`}
+ });
+ const KIND={entry:"Entry",page:"Page",form:"Form",decision:"",offsite:"Off-site",macro:"Main conversion",micro:"Supporting step",drop:"Drop-off"};
+ let nodes="";
+ f.nodes.forEach(n=>{const {x,y}=n,cx=x+NW/2;let shape;
+  if(n.k==="entry")shape=`<rect class="n-box" x="${x}" y="${y}" width="${NW}" height="${NH}" rx="${NH/2}"/>`;
+  else if(n.k==="form")shape=`<polygon class="n-box" points="${x+12},${y} ${x+NW},${y} ${x+NW-12},${y+NH} ${x},${y+NH}"/>`;
+  else if(n.k==="decision")shape=`<polygon class="n-box" points="${cx},${y-6} ${x+NW},${y+NH/2} ${cx},${y+NH+6} ${x},${y+NH/2}"/>`;
+  else shape=`<rect class="n-box" x="${x}" y="${y}" width="${NW}" height="${NH}" rx="${n.k==="macro"?10:5}"/>`;
+  const lines=wrapText((n.k==="drop"?"✕ ":"")+n.t,n.k==="decision"?16:24).slice(0,3);
+  const kind=KIND[n.k];const top=y+NH/2-(lines.length-1)*7.5+(kind?5:4);
+  let txt=kind?`<text class="n-kind" x="${cx}" y="${top-15}" text-anchor="middle">${kind}</text>`:"";
+  txt+=lines.map((L,i)=>`<text class="n-txt" x="${cx}" y="${top+i*15}" text-anchor="middle">${esc(L)}</text>`).join("");
+  let tag="";if(n.tag){const t=CONV[n.tag][1];const cls=n.miss?"missing":n.cross?"":t;const tw=n.tag.length*6.8+12;
+   tag=`<g class="tag ${cls}"${n.cross?' style="opacity:.75"':''}><rect x="${x+NW-tw+6}" y="${y-11}" width="${tw}" height="19" rx="4"${n.cross?' style="stroke-dasharray:2 2"':''}/><text x="${x+NW-tw/2+6}" y="${y+3}" text-anchor="middle">${n.tag}</text></g>`}
+  nodes+=`<g class="n-${n.k}"><title>${esc(kind+(kind?": ":"")+n.t+(n.tag?" ("+n.tag+" "+CONV[n.tag][0]+")":""))}</title>${shape}${txt}${tag}</g>`;
+ });
+ const defs=`<defs>${[["ah","arrow"],["ah-pain","arrow-pain"],["ah-off","arrow-off"]].map(([id,c])=>`<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="${c}" d="M0,0 L10,5 L0,10 z"/></marker>`).join("")}</defs>`;
+ return `<div class="scroll flowwrap"><svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}. A text version follows the diagram.">${defs}${edges}${nodes}${labels}</svg></div>
+ <details class="textflow"><summary>Text version of this flow</summary><ol>${f.edges.map(([a,b,l,st])=>{const d=n=>esc(n.t)+(n.tag?" ("+n.tag+" "+esc(CONV[n.tag][0])+")":"")+(n.k==="offsite"?", off-site":n.k==="drop"?", drop-off":"");
+  return `<li>${d(N[a])} → ${d(N[b])}${l?" ["+esc(l)+"]":""}${st==="pain"?", problem":""}</li>`}).join("")}</ol></details>`;
+}
+
+function track(rows){
+ let i=0;return `<table class="track"><thead><tr><th></th><th>Step</th><th>Conversion</th><th>Suggested event</th></tr></thead><tbody>${rows.map(r=>{const sub=r[0].startsWith("Also");if(!sub)i++;
+  return `<tr class="${sub?"sub":""}"><td>${sub?"":i}</td><td>${esc(r[0])}</td><td>${r[1]?`<span class="chip ${CONV[r[1]][1]}"><span class="id">${r[1]}</span></span>`:""}</td><td><code>${esc(r[2])}</code></td></tr>`}).join("")}</tbody></table>`}
+
+function render(){
+ const u=U[state.u];
+ document.querySelectorAll(".tab").forEach(b=>{const on=b.dataset.u===state.u;b.setAttribute("aria-selected",on);b.tabIndex=on?0:-1});
+ document.getElementById("view").setAttribute("aria-labelledby","tab-"+state.u);
+ document.querySelectorAll("#seg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===state.v));
+ document.getElementById("uname").textContent=u.name;
+ document.getElementById("udesc").textContent=u.desc;
+ const v=document.getElementById("view");let h="";
+ document.getElementById("seg").hidden=state.u==="actions";
+ if(state.u==="actions"){h=actionsView()}
+ else if(state.v==="current"){h=`<div class="sect"><p>How a ${u.name.toLowerCase()} moves through rewildingcollective.org today. The status under each conversion tag says whether the website supports that step today.</p>${map(u.current,false,"Current journey map for the "+u.name)}</div>${u.notes?`<div class="notes">${u.notes.map(n=>`<div class="panel"><h3>${esc(n.title)}</h3><ul class="qs">${n.items.map(i=>fx(i,true)).join("")}</ul></div>`).join("")}</div>`:""}`}
+ else if(state.v==="flow"){h=`<div class="sect"><p>Paths a ${u.name.toLowerCase()} can take through the current site. Grey dashed boxes leave the website; red boxes marked ✕ are dead ends or missing steps. Scroll sideways to see the whole diagram, or open the text version below it.</p>${flow(u.flow,"User flow through the current website for the "+u.name)}</div>`}
+ else{h=`<div class="sect"><p>The proposed journey once the changes in the bottom row are made.</p>${map(u.ideal,true,"Ideal journey map for the "+u.name)}</div>
+  <div class="notes"><div class="panel" style="grid-column:1/-1"><h3>Ideal user flow</h3><p>The target path through a redesigned site. Dotted tags hand off to another user's journey.</p>${flow(u.idealFlow,"Ideal user flow for the "+u.name)}</div>
+  <div class="panel"><h3>Funnel to track</h3><p>Funnel steps for analytics once the site can measure them. Event names are suggestions.</p>${track(u.track)}</div></div>`}
+ v.innerHTML=h;v.classList.remove("view");void v.offsetWidth;v.classList.add("view");
+ try{history.replaceState(null,"","#"+state.u+"-"+state.v)}catch(e){}
+}
+
+(function(){const done=ACTIONS.reduce((a,g)=>a+g.items.filter(i=>i[5]).length,0),total=ACTIONS.reduce((a,g)=>a+g.items.length,0);
+ const el=document.getElementById("progressline");el.innerHTML=`<b>Progress:</b> ${done} of ${total} actions completed since the review. <button type="button" class="linkbtn" id="toactions">See the Action list</button>`;
+ document.getElementById("toactions").addEventListener("click",()=>{state.u="actions";render();document.getElementById("tab-actions").focus()});})();
+document.getElementById("tabs").innerHTML=ORDER.map(k=>[k,U[k]]).map(([k,u])=>`<button class="tab${k==="actions"?" tab-actions":""}" role="tab" type="button" id="tab-${k}" aria-controls="view" data-u="${k}">${u.name}</button>`).join("");
+document.getElementById("tabs").addEventListener("click",e=>{const b=e.target.closest(".tab");if(b){state.u=b.dataset.u;render()}});
+document.getElementById("tabs").addEventListener("keydown",e=>{const i=ORDER.indexOf(state.u);let j=null;
+ if(e.key==="ArrowRight")j=(i+1)%ORDER.length;else if(e.key==="ArrowLeft")j=(i+ORDER.length-1)%ORDER.length;else if(e.key==="Home")j=0;else if(e.key==="End")j=ORDER.length-1;
+ if(j!==null){e.preventDefault();state.u=ORDER[j];render();document.getElementById("tab-"+state.u).focus()}});
+document.getElementById("view").addEventListener("click",e=>{const b=e.target.closest("[data-af]");if(b){af=b.dataset.af;render();document.querySelector('[data-af="'+af+'"]').focus()}});
+document.getElementById("seg").addEventListener("click",e=>{const b=e.target.closest("button");if(b){state.v=b.dataset.v;render()}});
+render();
+</script>
+
+</body>
+</html>
